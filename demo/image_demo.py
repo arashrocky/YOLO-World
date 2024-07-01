@@ -38,7 +38,10 @@ LABEL_ANNOTATOR = LabelAnnotator(text_padding=4,
 
 def parse_args():
     parser = argparse.ArgumentParser(description='YOLO-World Demo')
-    parser.add_argument('config', help='test config file path')
+    # parser.add_argument('config', help='test config file path')
+    parser.add_argument('config', 
+                        default='/data2/arash/projects/Auto_Labeling/YOLO-World/configs/pretrain/yolo_world_v2_xl_vlpan_bn_2e-3_100e_4x8gpus_obj365v1_goldg_train_lvis_minival.py',
+                        help='test config file path')
     parser.add_argument('checkpoint', help='checkpoint file')
     parser.add_argument('image', help='image path, include image file or dir.')
     parser.add_argument(
