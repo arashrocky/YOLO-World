@@ -39,15 +39,21 @@ LABEL_ANNOTATOR = LabelAnnotator(text_padding=4,
 def parse_args():
     parser = argparse.ArgumentParser(description='YOLO-World Demo')
     # parser.add_argument('config', help='test config file path')
-    parser.add_argument('config', 
-                        default='/data2/arash/projects/Auto_Labeling/YOLO-World/configs/pretrain/yolo_world_v2_xl_vlpan_bn_2e-3_100e_4x8gpus_obj365v1_goldg_train_lvis_minival.py',
+    parser.add_argument('--config', 
+                        default='/data2/arash/projects/Auto_Labeling/YOLO-World/configs/pretrain/'\
+                        'yolo_world_v2_xl_vlpan_bn_2e-3_100e_4x8gpus_obj365v1_goldg_train_lvis_minival.py',
                         help='test config file path')
-    parser.add_argument('checkpoint', help='checkpoint file')
-    parser.add_argument('image', help='image path, include image file or dir.')
-    parser.add_argument(
-        'text',
-        help=
-        'text prompts, including categories separated by a comma or a txt file with each line as a prompt.'
+    parser.add_argument('--checkpoint', 
+                        default='/data2/arash/Checkpoints/YOLO-WORLD/'\
+                        'yolo_world_v2_xl_obj365v1_goldg_cc3mlite_pretrain-5daf1395.pth',
+                        help='checkpoint file')
+    parser.add_argument('--image', 
+                        default='/data/arash/Datasets/DoTA/Accident_with_Objects/sequences/'\
+                        '0qfbmt4G8Rw_000435/images/000082.jpg',
+                        help='image path, include image file or dir.')
+    parser.add_argument('--text',
+                        default="car, truck, pedestrian, bus, motorcycle, bicycle",
+        help='text prompts, including categories separated by a comma or a txt file with each line as a prompt.'
     )
     parser.add_argument('--topk',
                         default=100,
@@ -58,23 +64,21 @@ def parse_args():
                         type=float,
                         help='confidence score threshold for predictions.')
     parser.add_argument('--device',
-                        default='cuda:0',
+                        default='cuda:6',
                         help='device used for inference.')
     parser.add_argument('--show',
                         action='store_true',
                         help='show the detection results.')
-    parser.add_argument(
-        '--annotation',
-        action='store_true',
-        help='save the annotated detection results as yolo text format.')
+    parser.add_argument('--annotation',
+                        action='store_true',
+                        help='save the annotated detection results as yolo text format.')
     parser.add_argument('--amp',
                         action='store_true',
                         help='use mixed precision for inference.')
     parser.add_argument('--output-dir',
                         default='demo_outputs',
                         help='the directory to save outputs')
-    parser.add_argument(
-        '--cfg-options',
+    parser.add_argument('--cfg-options',
         nargs='+',
         action=DictAction,
         help='override some settings in the used config, the key-value pair '
@@ -145,7 +149,8 @@ def inference_detector(model,
         images_dict[osp.basename(image_path)] = anno_image
         annotations_dict[osp.basename(image_path)] = detections
 
-        ANNOTATIONS_DIRECTORY = os.makedirs(r"./annotations", exist_ok=True)
+        ANNOTATIONS_DIRECTORY = "./annotations"
+        os.makedirs(ANNOTATIONS_DIRECTORY, exist_ok=True)
 
         MIN_IMAGE_AREA_PERCENTAGE = 0.002
         MAX_IMAGE_AREA_PERCENTAGE = 0.80
